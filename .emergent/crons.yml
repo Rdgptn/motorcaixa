@@ -1,0 +1,8 @@
+crons:
+  - name: daily-jobs
+    description: "Gera despesas recorrentes e, do dia 1 ao 5, envia o relatório Excel do mês anterior (08h BRT)"
+    cron: "0 11 * * *"
+    endpoint: "{{BASE_URL}}/api/cron/daily"
+    method: POST
+    # Cron endpoints must ack 2xx immediately; enqueue/background the actual work.
+    enabled: true

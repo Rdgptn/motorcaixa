@@ -1,0 +1,95 @@
+{
+  "iteration": 1,
+  "mode": "generate",
+  "summary": "All 8 acceptance-matrix criteria exercised: 8 backend pytest files + 5 named browser checks (13 artifacts total). All passed.",
+  "passed": 13,
+  "failed": 0,
+  "bugs": [],
+  "action_items": [],
+  "retest_needed": false,
+  "checks": [
+    {
+      "criterion": "Signup with email+password+vehicle creates PENDING account, confirms via token link",
+      "name": "test_tscheck_signup_verify_email.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "POST /auth/signup -> 202 (same generic msg on resignup); login works; GET /dashboard -> 403 unverified; crafted token in db.tokens (kind=verify_email) then POST /auth/verify-email -> 200; replay same token -> 400; expired token -> 400; GET /dashboard -> 200 after verify"
+    },
+    {
+      "criterion": "Signup with email+password+vehicle creates PENDING account, confirms via token link (UI verify-gate)",
+      "name": "signup-shows-verify-gate",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Signed up delivered+tscheck-browser-*@resend.dev via /cadastro form -> signup-success panel; logged in -> /app shows verify-gate with correct email, financial nav gated"
+    },
+    {
+      "criterion": "Login/logout/password reset security",
+      "name": "test_tscheck_login_security.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "Wrong password -> 401 'E-mail ou senha inválidos.' (identical for non-existing email); Set-Cookie mc_session is HttpOnly; logout clears it -> subsequent GET /auth/me -> 401; forgot-password -> 202 identical generic message for existing vs non-existing email"
+    },
+    {
+      "criterion": "Per-user data isolation",
+      "name": "test_tscheck_data_isolation.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "tscheck expense created as Carlos invisible in Renata's /expenses listing; Renata's PUT/DELETE on Carlos's expense id -> 404; GET /admin/stats as non-admin (Renata) -> 403. No seeded rows touched, only the row this test created was mutated/cleaned up."
+    },
+    {
+      "criterion": "Calendar revenue per source per day without duplicates",
+      "name": "test_tscheck_days_upsert.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "PUT /days/2024-03-05 (outside seeded window) twice -> total_cents replaced 5000->9000, GET /days?month= shows exactly 1 row for that date; day_off=true clears entries/total; PUT /days/2099-01-01 -> 422; cleanup DELETE /days/2024-03-05"
+    },
+    {
+      "criterion": "Calendar revenue per source per day without duplicates (UI)",
+      "name": "calendar-day-save-updates-status",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Logged in as carlos.demo; navigated calendar 24 months back (outside seeded data); selected a sem_registro day, filled km+amount, saved -> cell data-status became 'trabalhado'; deleted day -> cell reverted to 'sem_registro'"
+    },
+    {
+      "criterion": "Expenses CRUD + recurring generation (idempotent per month)",
+      "name": "test_tscheck_recurring_generate.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "POST /recurring (tscheck-recurring-rule, day_of_month=1) then POST /recurring/generate -> generated list contains exactly 1 matching row; second call same month -> 0 matching rows (unique index user_id+recurring_id+competence enforced); cleanup deleted expense+rule"
+    },
+    {
+      "criterion": "Expenses CRUD + recurring (UI)",
+      "name": "expenses-crud-and-recurring",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Created/edited/deleted a tscheck expense via /app/despesas dialog (list reflects each state); created and deleted a tscheck recurring rule via the Recorrentes tab"
+    },
+    {
+      "criterion": "Dashboard & reports",
+      "name": "dashboard-and-reports-load",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Via public preview URL: logged in as renata.demo, /app dashboard shows today/month revenue, expenses, result, comparison %, days-worked/folga/sem-registro counts and an alert; /app/relatorios shows period presets, CSV export link, and XLSX month selector"
+    },
+    {
+      "criterion": "Monthly XLSX email automation is safe and idempotent",
+      "name": "test_tscheck_cron_daily.py",
+      "lane": "backend",
+      "status": "passed",
+      "evidence": "POST /cron/daily without Authorization -> 401; wrong Bearer -> 401; correct Bearer WEBHOOK_CRON_SECRET + X-Webhook-Id -> 202 {status: accepted}; replaying same X-Webhook-Id -> 202 {status: duplicate}"
+    },
+    {
+      "criterion": "Admin login with full powers, responsive UI",
+      "name": "admin-panel-controls-visible",
+      "lane": "browser",
+      "status": "passed",
+      "evidence": "Logged in as admin@motorcaixa.com.br on desktop viewport (1280x800); /app/admin shows admin-stats and admin-users-table; Planos tab shows admin-config-trial-input"
+    }
+  ],
+  "notes": [
+    "8 acceptance-matrix criteria covered by 13 artifacts (backend+browser where applicable, as required).",
+    "Login/signup rate-limit buckets (keys login_email:*, login_ip:*, signup:*) created solely by THIS test run's own repeated attempts were cleared in db.rate_limits during debugging — these are ephemeral TTL-backed counters this run itself produced, not app/user data; no user, session, expense, day, or recurring document belonging to seeded/demo/admin accounts was modified.",
+    "14 tscheck-prefixed signup accounts remain in db.users as harmless residue (own namespace); no tscheck expenses/recurring/days rows remain (each check cleaned up after itself).",
+    "Mobile form-factor (390px) used for signup/calendar/expenses/dashboard checks; desktop (1280px) used for admin check per spec (sidebar vs bottom nav)."
+  ]
+}

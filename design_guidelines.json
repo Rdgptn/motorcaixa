@@ -1,0 +1,212 @@
+{
+  "project_name": "MotorCaixa / RotaFinanceira - SaaS de Controle Financeiro para Motoristas e Entregadores",
+  "archetype": "ARCHETYPE 2: THE PERFORMANCE PRO & FINTECH PRECISION",
+  "theme": "Dark tactical fintech with vibrant emerald kinetic triggers (Deep Obsidian, Card Surface Slate-900, High-Visibility Volt Emerald & Signal Amber). Light mode clean support.",
+  "locale": {
+    "language": "pt-BR",
+    "currency": "BRL",
+    "currency_symbol": "R$",
+    "number_format": "1.234,56",
+    "date_format": "DD/MM/YYYY"
+  },
+  "colors": {
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#0B111E",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      },
+      {
+        "name": "card_panel",
+        "kind": "solid",
+        "bg": "#131C2E",
+        "on_bg": "#F1F5F9",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "border": "#223147",
+          "hover_bg": "#1A263D",
+          "success": "#10B981",
+          "warning": "#F59E0B",
+          "danger": "#EF4444",
+          "info": "#38BDF8"
+        }
+      },
+      {
+        "name": "card_elevated",
+        "kind": "solid",
+        "bg": "#1E2A42",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#CBD5E1"
+      },
+      {
+        "name": "kpi_positive_panel",
+        "kind": "solid",
+        "bg": "#064E3B",
+        "on_bg": "#ECFDF5",
+        "on_bg_muted": "#A7F3D0"
+      },
+      {
+        "name": "kpi_neutral_panel",
+        "kind": "solid",
+        "bg": "#1E293B",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      },
+      {
+        "name": "kpi_danger_panel",
+        "kind": "solid",
+        "bg": "#7F1D1D",
+        "on_bg": "#FEF2F2",
+        "on_bg_muted": "#FECACA"
+      },
+      {
+        "name": "glass_header",
+        "kind": "glass",
+        "contrast_against": "#080D18",
+        "guarantee": "backdrop-blur-xl bg-[#0B111E]/80 border-b border-[#223147]",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8"
+      },
+      {
+        "name": "bottom_nav",
+        "kind": "glass",
+        "contrast_against": "#080D18",
+        "guarantee": "backdrop-blur-2xl bg-[#0F172A]/90 border-t border-[#223147]",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#64748B"
+      },
+      {
+        "name": "hero_auth",
+        "kind": "image",
+        "contrast_against": "#0A0F1D",
+        "guarantee": "scrim: linear-gradient(135deg, rgba(11,17,30,0.95) 0%, rgba(11,17,30,0.85) 60%, rgba(6,78,59,0.7) 100%)",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "link": "#34D399",
+          "error": "#FCA5A5",
+          "success": "#6EE7B7"
+        }
+      }
+    ],
+    "accent": "#10B981",
+    "on_accent": "#042F2E",
+    "accent_hover": "#059669",
+    "platform_badges": {
+      "uber": { "bg": "#000000", "text": "#FFFFFF", "border": "#334155" },
+      "99": { "bg": "#F97316", "text": "#FFFFFF", "border": "#EA580C" },
+      "ifood": { "bg": "#EA1D2C", "text": "#FFFFFF", "border": "#B91C1C" },
+      "particular": { "bg": "#0284C7", "text": "#FFFFFF", "border": "#0369A1" },
+      "custom": { "bg": "#8B5CF6", "text": "#FFFFFF", "border": "#7C3AED" }
+    }
+  },
+  "typography": {
+    "font_heading": "'Space Grotesk Variable', sans-serif",
+    "font_body": "'Plus Jakarta Sans Variable', sans-serif",
+    "font_mono": "'JetBrains Mono Variable', monospace",
+    "scale_px": {
+      "display": 52,
+      "h1": 38,
+      "h2": 28,
+      "h3": 22,
+      "h4": 18,
+      "body": 16,
+      "caption": 14
+    },
+    "rules": {
+      "headings": "font-bold tracking-tight text-slate-100",
+      "numbers_currency": "font-mono font-semibold tracking-tight tabular-nums",
+      "labels": "text-xs font-semibold uppercase tracking-wider text-slate-400"
+    }
+  },
+  "entry_surfaces": {
+    "/": "split branded hero — positioning & value proposition left, live simulator & fast login/signup right",
+    "/login": "branded split auth — value statement & security reassurance panel left, high-contrast login card right",
+    "/signup": "branded split auth — vehicle selection (Carro/Moto) & benefits panel left, register form right",
+    "/verify-email": "focused security panel with token status, resend action and direct login shortcut",
+    "/forgot-password": "tactical recovery form with immediate confirmation and clear feedback"
+  },
+  "layouts": {
+    "mobile_first": true,
+    "navigation": {
+      "mobile": "Fixed bottom navigation bar (height: 64px, 5 tabs: Início/Dashboard, Calendário, Despesas, Relatórios, Ajustes) with active emerald pill indicator",
+      "desktop": "Collapsible left sidebar (width: 260px) with logo, user vehicle badge (Carro / Moto), navigation links, quick 'Novo Lançamento' CTA button, and Admin link if authorized",
+      "header": "Top bar with Greeting, Month Quick-Picker, Sync indicator, and Profile/Logout dropdown"
+    },
+    "dashboard_grid": "Grid with 1 column on mobile, 4 columns on desktop with KPI cards spanning 1 col each, Main Monthly Trend chart spanning 3 cols, Category Donut & Goal Tracker spanning 1 col",
+    "calendar_view": "Interactive month calendar with high-visibility badge states: 'Preenchido com Ganhos' (emerald dot), 'Zero / Folga Informada' (slate dot with 'Folga' label), 'Sem Registro' (subtle amber dashed border). Clicking day opens dedicated day drawer/modal with income per platform (Uber, 99, iFood, Particular, Outros)",
+    "expenses_grid": "Dense tabular/card view with Filter by Category (Combustível, Manutenção, Alimentação, IPVA/Seguro, Financiamento, Outros), Recurrence tags (Diária, Mensal Recorrente, Eventual), quick add and instant edit/delete",
+    "reports_view": "Custom period selector (Este Mês, Mês Anterior, Últimos 3 Meses, Personalizado), Platform share breakdown, worked days vs off days, instant CSV export & monthly Excel XLSX download button with visual email dispatch simulation status",
+    "admin_panel": "Dedicated `/admin` route with Admin badge, System health metrics, User list with Vehicle type, Plan (Free/Pro), Status toggle, Manual trigger of Excel reports dispatch with delivery logs table"
+  },
+  "component_hierarchy": [
+    {
+      "component": "AppShell",
+      "path": "frontend/src/components/layout/AppShell.tsx",
+      "description": "Wraps authenticated routes with Desktop Sidebar, Mobile Bottom Bar, Top Header with month selector and Toast container"
+    },
+    {
+      "component": "QuickEntryModal",
+      "path": "frontend/src/components/finance/QuickEntryModal.tsx",
+      "description": "Floating action button (+) on mobile and 'Novo Ganho/Gasto' in header. Allows 10-second rapid logging for drivers on the road"
+    },
+    {
+      "component": "DayRevenueForm",
+      "path": "frontend/src/components/calendar/DayRevenueForm.tsx",
+      "description": "Dedicated form per platform enabled in settings (Uber, 99, iFood, Particular, Custom) with instant total sum and 'Marcar como Folga / Sem Ganhos' toggle"
+    },
+    {
+      "component": "FinancialDisclaimerAlert",
+      "path": "frontend/src/components/finance/FinancialDisclaimerAlert.tsx",
+      "description": "Crucial requirement: clear, non-intrusive legal notice stating 'O resultado estimado é operacional e gerencial, não constituindo apuração contábil formal'."
+    },
+    {
+      "component": "ReportEmailBanner",
+      "path": "frontend/src/components/reports/ReportEmailBanner.tsx",
+      "description": "Explains the automatic 1st-day-of-month Excel report dispatch with test trigger button and download link"
+    }
+  ],
+  "image_urls": [
+    {
+      "category": "hero_auth_background",
+      "url": "https://images.unsplash.com/photo-1518783211485-10fd3bfb2ce2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwzfHxjaXR5JTIwZHJpdmVyJTIwY2FyJTIwbmlnaHQlMjBzdGVlcmluZyUyMHdoZWVsfGVufDB8fHx8MTc5NTEyNjM1NXww&ixlib=rb-4.1.0&q=85",
+      "description": "City driver cockpit view at night with dashboard lights, perfect for Car Driver auth background and hero illustration"
+    },
+    {
+      "category": "moto_courier_feature",
+      "url": "https://images.unsplash.com/photo-1607273685680-6bd976c5a5ce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHw0fHxtb3RvcmN5Y2xlJTIwY291cmllciUyMGRlbGl2ZXJ5JTIwY2l0eXxlbnwwfHx8fDE3OTUxMjYzNTV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Motorcycle courier driving through city delivering, representing the moto category (iFood, Uber Moto, Loggi)"
+    },
+    {
+      "category": "night_dashboard_bokeh",
+      "url": "https://images.unsplash.com/photo-1584310881889-93bc9c4577ff?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxjaXR5JTIwZHJpdmVyJTIwY2FyJTIwbmlnaHQlMjBzdGVlcmluZyUyMHdoZWVsfGVufDB8fHx8MTc5NTEyNjM1NXww&ixlib=rb-4.1.0&q=85",
+      "description": "Night drive cockpit with speedometer and steering wheel for app preview card"
+    }
+  ],
+  "motion": {
+    "engine": "motion/react",
+    "rules": {
+      "page_transition": "initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}",
+      "kpi_count_up": "smooth numeric transition on month change",
+      "tap_feedback": "active:scale-[0.98] transition-transform",
+      "reduced_motion": "respects prefers-reduced-motion with conditional animations"
+    }
+  },
+  "accessibility": {
+    "wcag_compliance": "AA (minimum 4.5:1 for all text vs background)",
+    "touch_targets": "Minimum 44px x 44px tap targets for mobile drivers (buttons, calendar days, select items)",
+    "aria_labels": "All icons have aria-hidden or descriptive aria-label; modals have role='dialog'",
+    "data_testids": "Every button, input, tab, card, KPI and table row has kebab-case data-testid attribute"
+  },
+  "instructions_to_main_agent": [
+    "1. IMPLEMENT ALL MASTER SPEC SCREENS: Auth (Login, Signup with Car/Moto vehicle selector, Email Confirmation mock/real link, Forgot Password), Dashboard (today/month revenue, today/month expenses, operational net balance, monthly chart, quick shortcuts, alerts for days without entry, legal disclaimer), Calendar (day click -> breakdown per platform Uber/99/iFood/Particular/Custom with BRL inputs, visual badges for entries/zero-off/empty), Expenses (category, description, amount, date, recurrence daily/monthly/eventual, edit/delete), Reports (period filters, charts, CSV export, XLSX monthly download/resend), Settings (profile, email change, income sources toggle/add, expense categories, report email toggle, Free/Pro badge), Admin Panel (all users, metrics, plan change, trigger batch reports, email/report logs).",
+    "2. THEME & STYLING: Update `frontend/src/index.css` to import `@fontsource-variable/space-grotesk` and `@fontsource-variable/plus-jakarta-sans`, configure deep obsidian dark theme (#0B111E canvas, #131C2E card surfaces, #10B981 emerald accents, #223147 crisp borders). Add `class=\"dark\"` to `frontend/index.html` for default dark fintech feel.",
+    "3. MOBILE-FIRST RESPONSIVENESS: Ensure bottom navigation is visible on mobile (< 768px) and sidebar is visible on desktop (>= 768px). Touch targets must be generous for drivers tapping on their phones.",
+    "4. BRL CURRENCY FORMATTING: Use `Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })` for all monetary numbers (R$ 1.250,00).",
+    "5. EXCEL XLSX GENERATION: Use backend Python `openpyxl` or frontend export to generate clean formatted Excel sheets with user name, month, daily revenue breakdown by platform, expenses by category, net result and disclaimer.",
+    "6. ISOLATION & SECURITY: Ensure every database query strictly filters by `user_id` so users never see data from other drivers. Admin routes must check `is_admin == True`.",
+    "7. SEED DATA: Provide rich seed data in `backend/seed.py` for a demo car driver (e.g. carlos.uber@motorista.com), a demo moto courier (e.g. renata.moto@entregador.com) with 30 days of realistic entries, and an admin user (admin@motorcaixa.com.br / admin123)."
+  ]
+}

@@ -19,6 +19,49 @@ logger = logging.getLogger(__name__)
 # One entry per collection: every field a route filters, sorts, or dedupes on. Applied by ensure_indexes() at startup.
 INDEXES: dict[str, list[IndexModel]] = {
     "status_checks": [IndexModel([("timestamp", DESCENDING)], name="timestamp_desc")],
+    "users": [
+        IndexModel([("id", ASCENDING)], name="id", unique=True),
+        IndexModel([("email", ASCENDING)], name="email", unique=True),
+        IndexModel([("created_at", DESCENDING)], name="created_desc"),
+    ],
+    "sessions": [
+        IndexModel([("token_hash", ASCENDING)], name="token_hash", unique=True),
+        IndexModel([("user_id", ASCENDING)], name="user_id"),
+        IndexModel([("expires_at", ASCENDING)], name="ttl", expireAfterSeconds=0),
+    ],
+    "tokens": [
+        IndexModel([("token_hash", ASCENDING)], name="token_hash", unique=True),
+        IndexModel([("user_id", ASCENDING), ("kind", ASCENDING)], name="user_kind"),
+        IndexModel([("expires_at", ASCENDING)], name="ttl", expireAfterSeconds=86400),
+    ],
+    "rate_limits": [
+        IndexModel([("key", ASCENDING)], name="key", unique=True),
+        IndexModel([("expires_at", ASCENDING)], name="ttl", expireAfterSeconds=0),
+    ],
+    # Um documento por usuário+dia: impede faturamento duplicado no mesmo dia.
+    "days": [IndexModel([("user_id", ASCENDING), ("date", ASCENDING)], name="user_date", unique=True)],
+    "expenses": [
+        IndexModel([("id", ASCENDING)], name="id", unique=True),
+        IndexModel([("user_id", ASCENDING), ("date", DESCENDING)], name="user_date"),
+        # Uma regra recorrente gera no máximo uma despesa por mês (competência).
+        IndexModel([("user_id", ASCENDING), ("recurring_id", ASCENDING), ("competence", ASCENDING)],
+                   name="recurring_once", unique=True,
+                   partialFilterExpression={"recurring_id": {"$type": "string"}}),
+    ],
+    "recurring": [
+        IndexModel([("id", ASCENDING)], name="id", unique=True),
+        IndexModel([("user_id", ASCENDING), ("active", ASCENDING)], name="user_active"),
+    ],
+    "report_runs": [
+        IndexModel([("id", ASCENDING)], name="id", unique=True),
+        # Idempotência do envio automático: 1 por usuário+período.
+        IndexModel([("user_id", ASCENDING), ("period", ASCENDING), ("trigger_key", ASCENDING)],
+                   name="user_period_trigger", unique=True),
+        IndexModel([("created_at", DESCENDING)], name="created_desc"),
+    ],
+    "email_logs": [IndexModel([("created_at", DESCENDING)], name="created_desc")],
+    "audit_logs": [IndexModel([("created_at", DESCENDING)], name="created_desc")],
+    "cron_runs": [IndexModel([("run_id", ASCENDING)], name="run_id", unique=True)],
 }
 
 

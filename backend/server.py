@@ -63,6 +63,12 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Rotas do app (cada módulo expõe um APIRouter, montado sob /api)
+from routers import admin, auth, cron, days, expenses, me, reports  # noqa: E402
+
+for r in (auth.router, me.router, days.router, expenses.router, reports.router, admin.router, cron.router):
+    api_router.include_router(r)
+
 # Include the router in the main app
 app.include_router(api_router)
 

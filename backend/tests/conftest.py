@@ -45,3 +45,27 @@ async def aclient():
 
 
 # --- app-specific fixtures below this line ---
+
+import sys
+from pathlib import Path as _Path
+
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+
+from lib.db import mongo_url  # noqa: E402
+
+
+@pytest_asyncio.fixture
+async def db():
+    """Fresh Mongo handle (own client bound to this test's event loop) pointed at the same
+    real database the running server uses — for fixture setup only (e.g. inserting a
+    verify-email token), never for mocking responses."""
+    import os as _os
+
+    from motor.motor_asyncio import AsyncIOMotorClient
+
+    test_client = AsyncIOMotorClient(mongo_url)
+    try:
+        yield test_client[_os.environ["DB_NAME"]]
+    finally:
+        test_client.close()
+
