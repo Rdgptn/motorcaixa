@@ -6,9 +6,9 @@ import AuthLayout from "@/components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiPost } from "@/lib/api";
-import { errorMessage } from "@/lib/format";
-import type { MessageOut, VehicleType } from "@/lib/types";
+import { apiPost } from "@/lib/api-client";
+import { errorMessage } from "@/lib/formatters";
+import type { DocumentType, MessageOut, VehicleType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function passwordProblem(pw: string): string | null {
@@ -21,12 +21,15 @@ export default function Signup() {
   const [vehicle, setVehicle] = useState<VehicleType>("carro");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [documentType, setDocumentType] = useState<DocumentType>("cpf");
+  const [document, setDocument] = useState("");
+  const [documentConsent, setDocumentConsent] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
 
   const signup = useMutation({
-    mutationFn: () => apiPost<MessageOut>("/auth/signup", { name, email, password, vehicle_type: vehicle }),
+    mutationFn: () => apiPost<MessageOut>("/auth/signup", { name, email, password, vehicle_type: vehicle, document_type: documentType, document, document_consent: documentConsent }),
     onError: (e) => setError(errorMessage(e)),
   });
 
@@ -34,6 +37,10 @@ export default function Signup() {
     e.preventDefault();
     const pw = passwordProblem(password);
     if (name.trim().length < 2) return setError("Informe seu nome.");
+    const digits = document.replace(/\D/g, "");
+    if (documentType === "cpf" && digits.length !== 11) return setError("Informe um CPF válido com 11 dígitos.");
+    if (documentType === "rg" && (digits.length < 5 || digits.length > 14)) return setError("Informe um RG válido.");
+    if (!documentConsent) return setError("Autorize o uso protegido do documento para impedir contas duplicadas.");
     if (pw) return setError(pw);
     if (password !== confirm) return setError("As senhas não conferem.");
     setError("");
@@ -66,7 +73,7 @@ export default function Signup() {
   );
 
   return (
-    <AuthLayout title="Criar conta" subtitle="Grátis. Leva menos de um minuto.">
+    <AuthLayout title="Criar conta" subtitle="14 dias grátis. Depois, assinatura para continuar.">
       <form onSubmit={submit} className="space-y-5" data-testid="signup-form">
         <div className="space-y-2">
           <Label>Você trabalha com</Label>
@@ -83,6 +90,19 @@ export default function Signup() {
           <Label htmlFor="email">E-mail</Label>
           <Input id="email" type="email" required autoComplete="email" className="h-12" value={email} onChange={(e) => setEmail(e.target.value)} data-testid="signup-email-input" />
         </div>
+        <div className="space-y-2">
+          <Label>Documento de identificação</Label>
+          <div className="grid grid-cols-[110px_1fr] gap-2">
+            <select aria-label="Tipo de documento" value={documentType} onChange={(e) => setDocumentType(e.target.value as DocumentType)} className="h-12 rounded-md border border-input bg-background px-3 text-sm">
+              <option value="cpf">CPF</option><option value="rg">RG</option>
+            </select>
+            <Input required inputMode="numeric" autoComplete="off" placeholder={documentType === "cpf" ? "000.000.000-00" : "Número do RG"} className="h-12" value={document} onChange={(e) => setDocument(e.target.value)} data-testid="signup-document-input" />
+          </div>
+          <label className="flex items-start gap-2 text-xs text-muted-foreground">
+            <input type="checkbox" className="mt-0.5 accent-primary" checked={documentConsent} onChange={(e) => setDocumentConsent(e.target.checked)} />
+            Autorizo o uso protegido deste documento exclusivamente para impedir cadastros duplicados.
+          </label>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>
@@ -94,6 +114,7 @@ export default function Signup() {
           </div>
         </div>
         <p className="text-xs text-muted-foreground">Mínimo de 8 caracteres, com letras e números.</p>
+        <p className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">Seu teste dura 14 dias. Depois, será necessário assinar para continuar usando o app.</p>
         {error && <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-red-300" data-testid="signup-error">{error}</p>}
         <Button type="submit" className="h-12 w-full text-base active:scale-[0.98] transition-transform" disabled={signup.isPending} data-testid="signup-submit-button">
           {signup.isPending && <Loader2 className="size-4 animate-spin" />} Criar conta

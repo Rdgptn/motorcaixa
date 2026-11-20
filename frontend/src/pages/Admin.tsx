@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MoneyInput, NativeSelect, PageHeader, Panel } from "@/components/finance/ui";
-import { apiGet, apiPatch, apiPost, apiPut } from "@/lib/api";
-import { centsToInput, dateTime, errorMessage, money, monthLabel, parseMoney, shiftMonth } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { apiGet, apiPatch, apiPost, apiPut } from "@/lib/api-client";
+import { centsToInput, dateTime, errorMessage, money, monthLabel, parseMoney, shiftMonth } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { AdminStats, AdminUserDetail, AdminUserPatch, AdminUserRow, AuditOut, ConfigIn, DashboardOut, EmailLogOut, MessageOut, ReportRunOut } from "@/lib/types";
 
 function Stat({ label, value, testId }: { label: string; value: string | number; testId: string }) {

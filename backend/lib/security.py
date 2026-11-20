@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 from fastapi import HTTPException, Request
 
-from lib.db import db
+from lib.database import db
 
 SESSION_COOKIE = "mc_session"
 SESSION_DAYS = 7

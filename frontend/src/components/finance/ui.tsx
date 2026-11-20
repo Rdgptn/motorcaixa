@@ -1,7 +1,7 @@
 import type { ReactNode, SelectHTMLAttributes } from "react";
 import { Info, TrendingDown, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { money, pctChange } from "@/lib/format";
+import { money, pctChange } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {

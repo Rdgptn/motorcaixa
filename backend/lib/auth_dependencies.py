@@ -1,13 +1,10 @@
-"""Dependências de autenticação/autorização usadas pelas rotas.
+"""Dependências de autenticação, autorização e bloqueio de assinatura. Regra de isolamento: o usuário é identificado pela sessão validada no servidor."""
 
-Regra de ouro do isolamento: o usuário é identificado SEMPRE pelo cookie de sessão
-(validado no servidor). Nenhuma rota aceita `user_id` vindo do navegador para dados
-financeiros; todas as consultas usam `user["id"]` obtido aqui.
-"""
 
 from fastapi import Depends, HTTPException, Request
 
-from lib.db import db
+from lib.database import db
+from lib.identity import has_access
 from lib.security import SESSION_COOKIE, now_utc, sha256
 
 
@@ -35,6 +32,8 @@ def is_verified(user: dict) -> bool:
 async def require_verified(user: dict = Depends(get_current_user)) -> dict:
     if not is_verified(user):
         raise HTTPException(status_code=403, detail="Confirme seu e-mail para usar esta função.")
+    if not has_access(user):
+        raise HTTPException(status_code=402, detail="Seu período gratuito terminou. Ative uma assinatura para continuar.")
     return user
 
 

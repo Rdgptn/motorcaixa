@@ -2,7 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 import { ArrowRight, Bike, CalendarDays, Car, FileSpreadsheet, LineChart, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/layout/AuthLayout";
 import { buttonVariants } from "@/components/ui/button";
-import { useMe } from "@/lib/hooks";
+import { useMe } from "@/lib/data-hooks";
 
 const HERO = "https://images.unsplash.com/photo-1584310881889-93bc9c4577ff?crop=entropy&cs=srgb&fm=jpg&q=70&w=1400";
 const MOTO = "https://images.unsplash.com/photo-1607273685680-6bd976c5a5ce?crop=entropy&cs=srgb&fm=jpg&q=70&w=900";

@@ -12,7 +12,7 @@ import random
 import uuid
 from datetime import date, timedelta
 
-from lib.db import db, ensure_indexes
+from lib.database import db, ensure_indexes
 from lib.defaults import default_categories, default_sources
 from lib.security import hash_password, now_utc
 
@@ -27,6 +27,7 @@ async def upsert_user(email: str, name: str, vehicle: str, password: str, role: 
         "name": name, "email": email, "password_hash": hash_password(password), "vehicle_type": vehicle,
         "verified_email": email, "role": role, "status": "active", "is_demo": demo,
         "report_opt_in": False if demo or role == "admin" else True,
+        "subscription_status": "active" if demo or role == "admin" else "trialing",
     }
     if existing:
         await db.users.update_one({"id": existing["id"]}, {"$set": base})
@@ -34,6 +35,7 @@ async def upsert_user(email: str, name: str, vehicle: str, password: str, role: 
     user = {
         "id": str(uuid.uuid4()), **base, "email_verified_at": now_utc(), "plan": "free",
         "timezone": "America/Sao_Paulo", "report_attach": True,
+        "trial_started_at": now_utc(), "trial_ends_at": now_utc() + timedelta(days=14),
         "income_sources": default_sources(vehicle), "expense_categories": default_categories(vehicle),
         "created_at": now_utc(), "last_login_at": None,
     }

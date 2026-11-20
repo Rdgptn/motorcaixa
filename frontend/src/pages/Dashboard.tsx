@@ -4,9 +4,9 @@ import { AlertTriangle, CalendarPlus, CheckCircle2, Info, ReceiptText } from "lu
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { buttonVariants } from "@/components/ui/button";
 import { CHART_COLORS, Disclaimer, EmptyState, KpiCard, PageHeader, Panel, SkeletonBlock } from "@/components/finance/ui";
-import { apiGet } from "@/lib/api";
-import { money, monthLabel } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { apiGet } from "@/lib/api-client";
+import { money, monthLabel } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { DashboardOut } from "@/lib/types";
 
 const ALERT_ICON = { warning: AlertTriangle, info: Info, success: CheckCircle2 };

@@ -6,11 +6,11 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from lib.db import db
-from lib.deps import require_verified
+from lib.database import db
+from lib.auth_dependencies import require_verified
 from lib.jobs import generate_recurring_for_user
 from lib.security import now_utc
-from lib.serializers import expense_out, recurring_out
+from lib.response_serializers import expense_out, recurring_out
 from models.schemas import (DATE_RE, ExpenseIn, ExpenseOut, GenerateOut, MessageOut, RecurringIn,
                             RecurringOut)
 

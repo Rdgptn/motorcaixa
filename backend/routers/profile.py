@@ -1,15 +1,15 @@
-"""Perfil e ajustes do próprio usuário (fontes de renda, categorias, preferências, e-mail, senha)."""
+"""Perfil, preferências e planos do usuário autenticado."""
 
 import uuid
 from zoneinfo import available_timezones
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from lib.db import db
+from lib.database import db
 from lib.defaults import DEFAULT_CONFIG, PLAN_FEATURES, default_categories, default_sources, merge_defaults
-from lib.deps import get_current_user
+from lib.auth_dependencies import get_current_user
 from lib.security import hash_password, now_utc, rate_limit, revoke_sessions, verify_password
-from lib.serializers import user_out
+from lib.response_serializers import user_out
 from models.schemas import (ChangeEmailIn, ChangePasswordIn, MessageOut, NamedListIn, PlanInfo, PlansOut,
                             ProfilePatch, UserOut)
 from routers.auth import send_verification

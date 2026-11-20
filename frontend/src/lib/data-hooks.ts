@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ApiError, apiGet } from "./api";
+import { ApiError, apiGet } from "./api-client";
 import type { UserOut } from "./types";
 
 export const ME_KEY = ["me"] as const;

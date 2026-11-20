@@ -16,7 +16,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-from lib.db import client, db, ensure_indexes
+from lib.database import client, db, ensure_indexes
 
 
 # Startup runs before the yield, shutdown after it. Add your own setup/teardown here.
@@ -64,20 +64,22 @@ async def get_status_checks():
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 # Rotas do app (cada módulo expõe um APIRouter, montado sob /api)
-from routers import admin, auth, cron, days, expenses, me, reports  # noqa: E402
+from routers import admin, auth, billing, earnings_calendar, expenses, profile, reports, scheduled_reports  # noqa: E402
 
-for r in (auth.router, me.router, days.router, expenses.router, reports.router, admin.router, cron.router):
+for r in (auth.router, billing.router, profile.router, earnings_calendar.router, expenses.router, reports.router, admin.router, scheduled_reports.router):
     api_router.include_router(r)
 
 # Include the router in the main app
 app.include_router(api_router)
 
+configured_origins = [x.strip() for x in os.environ.get('CORS_ORIGINS', os.environ.get('APP_URL', 'http://localhost:5173')).split(',') if x.strip() and x.strip() != '*']
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=configured_origins,
+    allow_methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allow_headers=['Content-Type', 'X-CSRF-Token'],
 )
 
 # Configure logging

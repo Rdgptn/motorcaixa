@@ -51,7 +51,7 @@ from pathlib import Path as _Path
 
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 
-from lib.db import mongo_url  # noqa: E402
+from lib.database import mongo_url  # noqa: E402
 
 
 @pytest_asyncio.fixture

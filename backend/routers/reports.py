@@ -7,12 +7,12 @@ from datetime import date, timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response, StreamingResponse
 
-from lib.db import db
-from lib.deps import require_verified
+from lib.database import db
+from lib.auth_dependencies import require_verified
 from lib.finance import fetch_days, fetch_expenses, month_bounds, prev_month, period_summary
 from lib.jobs import send_monthly_report, user_today
 from lib.security import now_utc, rate_limit
-from lib.serializers import run_out
+from lib.response_serializers import run_out
 from lib.xlsx_report import build_month_xlsx
 from models.schemas import (DATE_RE, Alert, DashboardOut, PeriodIn, PeriodSummary, ReportRunOut,
                             SummaryCompareOut)

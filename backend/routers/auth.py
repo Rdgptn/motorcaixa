@@ -6,18 +6,22 @@ Mensagens públicas são genéricas para não revelar se um e-mail já tem conta
 import logging
 import os
 import uuid
+from datetime import timedelta
+
+from pymongo.errors import DuplicateKeyError
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
-from lib.db import db
-from lib.defaults import default_categories, default_sources
-from lib.deps import get_current_user
+from lib.database import db
+from lib.defaults import DEFAULT_CONFIG, default_categories, default_sources
+from lib.auth_dependencies import get_current_user
+from lib.identity import document_fingerprint, trial_ends_at
 from lib.mailer import (EmailError, account_exists_html, reset_password_html, send_email,
                         verify_email_html)
 from lib.security import (SESSION_COOKIE, SESSION_DAYS, client_ip, consume_token, create_session,
                           dummy_verify, hash_password, issue_token, now_utc, rate_limit,
                           revoke_sessions, verify_password)
-from lib.serializers import user_out
+from lib.response_serializers import user_out
 from models.schemas import (EmailIn, LoginIn, MessageOut, ResetPasswordIn, SignupIn, TokenIn,
                             UserOut)
 
@@ -43,7 +47,6 @@ async def signup(body: SignupIn, request: Request):
     email = body.email.lower()
     existing = await db.users.find_one({"email": email}, {"_id": 0})
     if existing:
-        # Não revelamos na resposta; avisamos o dono do e-mail.
         if existing.get("verified_email") == email:
             subject, html = account_exists_html(existing["name"])
             try:
@@ -53,16 +56,27 @@ async def signup(body: SignupIn, request: Request):
         else:
             await send_verification(existing)
         return MessageOut(message=SIGNUP_MSG)
+    fingerprint = document_fingerprint(body.document_type, body.document)
+    if await db.users.find_one({"document_fingerprint": fingerprint}, {"_id": 1}):
+        # Resposta genérica: não revela se o documento já está associado a uma conta.
+        return MessageOut(message=SIGNUP_MSG)
+    started = now_utc()
     user = {
         "id": str(uuid.uuid4()), "name": body.name.strip(), "email": email,
         "password_hash": hash_password(body.password), "vehicle_type": body.vehicle_type,
-        "verified_email": None, "email_verified_at": None, "role": "user", "plan": "free",
+        "document_type": body.document_type, "document_fingerprint": fingerprint,
+        "document_consent_at": started, "verified_email": None, "email_verified_at": None,
+        "role": "user", "plan": "free", "subscription_status": "trialing",
+        "trial_started_at": started, "trial_ends_at": trial_ends_at(started, 14),
         "status": "active", "timezone": "America/Sao_Paulo", "report_opt_in": True, "report_attach": True,
         "is_demo": False, "income_sources": default_sources(body.vehicle_type),
-        "expense_categories": default_categories(body.vehicle_type), "created_at": now_utc(),
+        "expense_categories": default_categories(body.vehicle_type), "created_at": started,
         "last_login_at": None,
     }
-    await db.users.insert_one(user)
+    try:
+        await db.users.insert_one(user)
+    except DuplicateKeyError:
+        return MessageOut(message=SIGNUP_MSG)
     await send_verification(user)
     return MessageOut(message=SIGNUP_MSG)
 
@@ -82,7 +96,7 @@ async def login(body: LoginIn, request: Request, response: Response):
         raise HTTPException(status_code=403, detail="Conta desativada. Fale com o suporte.")
     raw = await create_session(user["id"], request)
     response.set_cookie(SESSION_COOKIE, raw, max_age=SESSION_DAYS * 86400, httponly=True,
-                        secure=COOKIE_SECURE, samesite="lax", path="/")
+                        secure=COOKIE_SECURE, samesite=("none" if COOKIE_SECURE else "lax"), path="/")
     await db.users.update_one({"id": user["id"]}, {"$set": {"last_login_at": now_utc()}})
     return user_out(user)
 

@@ -40,7 +40,7 @@ def merge_defaults(current: list[dict], defaults: list[dict]) -> list[dict]:
 
 # Preços são hipóteses comerciais: ficam no banco (coleção app_config) e o admin pode
 # alterá-los. Estes valores só são usados se ainda não houver configuração salva.
-DEFAULT_CONFIG = {"pro_price_cents": 1990, "trial_days": 7}
+DEFAULT_CONFIG = {"pro_price_cents": 1990, "trial_days": 14}
 PLAN_FEATURES = {
     "free": ["Calendário de faturamento", "Controle de despesas", "Dashboard mensal",
              "Relatório mensal em Excel por e-mail"],

@@ -7,10 +7,10 @@ import AuthLayout from "@/components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiPost } from "@/lib/api";
-import { beginSession } from "@/lib/session";
-import { errorMessage } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { apiPost } from "@/lib/api-client";
+import { beginSession } from "@/lib/auth-session";
+import { errorMessage } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { UserOut } from "@/lib/types";
 
 export default function Login() {

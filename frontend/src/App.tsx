@@ -13,6 +13,7 @@ import Expenses from "@/pages/Expenses";
 import Reports from "@/pages/Reports";
 import Settings from "@/pages/Settings";
 import Admin from "@/pages/Admin";
+import Subscription from "@/pages/Subscription";
 
 // One <Route> per page in src/pages; BrowserRouter already wraps this in main.tsx.
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/verificar-email" element={<VerifyEmail />} />
         <Route path="/esqueci-senha" element={<ForgotPassword />} />
         <Route path="/redefinir-senha" element={<ResetPassword />} />
+        <Route path="/assinar" element={<Subscription />} />
         <Route path="/app" element={<AppShell />}>
           <Route index element={<Dashboard />} />
           <Route path="calendario" element={<CalendarPage />} />

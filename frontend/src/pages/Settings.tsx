@@ -8,9 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect, PageHeader, Panel } from "@/components/finance/ui";
-import { apiGet, apiPatch, apiPost, apiPut } from "@/lib/api";
-import { errorMessage, money } from "@/lib/format";
-import { ME_KEY, useMe } from "@/lib/hooks";
+import { apiGet, apiPatch, apiPost, apiPut } from "@/lib/api-client";
+import { errorMessage, money } from "@/lib/formatters";
+import { ME_KEY, useMe } from "@/lib/data-hooks";
 import type { MessageOut, PlansOut, UserOut, VehicleType } from "@/lib/types";
 import { passwordProblem } from "@/pages/Signup";
 import { cn } from "@/lib/utils";
@@ -184,7 +184,7 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-xs text-muted-foreground" data-testid="plans-billing-note">Assinatura paga ainda não está disponível. Nenhuma cobrança é feita.</p>
+            <p className="mt-3 text-xs text-muted-foreground" data-testid="plans-billing-note">Para assinar, use o checkout seguro. O cartão não é armazenado pelo MotorCaixa.</p>
           </Panel>
         </div>
       </div>

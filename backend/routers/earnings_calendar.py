@@ -1,13 +1,10 @@
-"""Faturamento por dia (calendário). Um documento por (usuário, dia) — índice único impede duplicidade.
+"""Calendário de faturamento diário do motorista. Registros sem documento representam ausência de registro; folga é explícita."""
 
-- Sem documento no dia  => "sem registro" (não sabemos se trabalhou).
-- day_off=True ou total 0 => "folga / zero informado".
-"""
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from lib.db import db
-from lib.deps import require_verified
+from lib.database import db
+from lib.auth_dependencies import require_verified
 from lib.finance import month_bounds
 from lib.jobs import user_today
 from lib.security import aware, now_utc

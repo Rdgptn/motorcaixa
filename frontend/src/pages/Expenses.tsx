@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState, MoneyInput, NativeSelect, PageHeader, Panel, SkeletonBlock } from "@/components/finance/ui";
-import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api";
-import { brDate, centsToInput, errorMessage, money, monthEnd, monthLabel, parseMoney, shiftMonth } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { apiDelete, apiGet, apiPost, apiPut } from "@/lib/api-client";
+import { brDate, centsToInput, errorMessage, money, monthEnd, monthLabel, parseMoney, shiftMonth } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { DashboardOut, ExpenseIn, ExpenseKind, ExpenseOut, GenerateOut, RecurringIn, RecurringOut, UserOut } from "@/lib/types";
 
 const KIND_LABEL: Record<ExpenseKind, string> = { diaria: "Diária", mensal: "Mensal", eventual: "Eventual" };

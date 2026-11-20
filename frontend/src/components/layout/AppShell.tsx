@@ -1,14 +1,14 @@
-import { NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { BarChart3, CalendarDays, Home, LogOut, MailWarning, Receipt, Settings2, Shield, Bike, Car, Loader2 } from "lucide-react";
+import { BarChart3, CalendarDays, Home, LogOut, MailWarning, Receipt, Settings2, Shield, Bike, Car, Loader2, LockKeyhole } from "lucide-react";
 import { Logo } from "@/components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ApiError, apiPost } from "@/lib/api";
-import { endSession } from "@/lib/session";
-import { errorMessage } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { ApiError, apiPost } from "@/lib/api-client";
+import { endSession } from "@/lib/auth-session";
+import { errorMessage } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { MessageOut, UserOut } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +44,18 @@ function VerifyGate({ user }: { user: UserOut }) {
   );
 }
 
+function SubscriptionGate({ user }: { user: UserOut }) {
+  const end = user.trial_ends_at ? new Date(user.trial_ends_at).toLocaleDateString("pt-BR") : "o fim do período gratuito";
+  return (
+    <div className="mx-auto max-w-lg rounded-2xl border border-primary/30 bg-card p-6 text-center animate-rise" data-testid="subscription-gate">
+      <LockKeyhole className="mx-auto size-10 text-primary" aria-hidden />
+      <h2 className="mt-3 text-2xl font-bold">Assinatura necessária</h2>
+      <p className="mt-2 text-muted-foreground">Seu acesso gratuito terminou em <strong className="text-foreground">{end}</strong>. Ative o plano Pro para continuar usando o MotorCaixa.</p>
+      <Link to="/assinar" className="mt-5 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 font-semibold text-primary-foreground" data-testid="subscription-gate-button">Ver opções e assinar</Link>
+    </div>
+  );
+}
+
 export default function AppShell() {
   const me = useMe();
   const loc = useLocation();
@@ -58,6 +70,7 @@ export default function AppShell() {
   if (me.isLoading) content = <div className="h-40 animate-pulse rounded-xl bg-card" data-testid="app-loading" />;
   else if (!user) content = <p className="rounded-xl border bg-card p-6 text-muted-foreground" data-testid="app-offline">Não foi possível conectar ao servidor. Tente novamente em instantes.</p>;
   else if (!user.email_verified && !isSettings && !(isAdminPage && user.role === "admin")) content = <VerifyGate user={user} />;
+  else if (user.access_blocked && !isSettings) content = <SubscriptionGate user={user} />;
   else content = <Outlet />;
 
   return (

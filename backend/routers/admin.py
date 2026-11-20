@@ -7,15 +7,15 @@ from datetime import timedelta
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
-from lib.db import db
-from lib.deps import require_admin
+from lib.database import db
+from lib.auth_dependencies import require_admin
 from lib.finance import month_bounds, period_summary
 from lib.jobs import process_monthly_batch, send_monthly_report, user_today
 from lib.security import aware, now_utc, revoke_sessions
-from lib.serializers import admin_row, run_out
+from lib.response_serializers import admin_row, run_out
 from models.schemas import (AdminStats, AdminUserDetail, AdminUserPatch, AdminUserRow, AuditOut, ConfigIn,
                             EmailLogOut, MessageOut, PeriodIn, ReportRunOut)
-from routers.me import get_config
+from routers.profile import get_config
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

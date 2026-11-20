@@ -1,4 +1,4 @@
-import { ApiError } from "./api";
+import { ApiError } from "./api-client";
 
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 

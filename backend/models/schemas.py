@@ -12,6 +12,8 @@ from typing import Literal, Optional
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 VehicleType = Literal["carro", "moto"]
+DocumentType = Literal["cpf", "rg"]
+SubscriptionStatus = Literal["trialing", "active", "past_due", "canceled", "expired"]
 ExpenseKind = Literal["diaria", "mensal", "eventual"]
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 MONTH_RE = re.compile(r"^\d{4}-(0[1-9]|1[0-2])$")
@@ -41,11 +43,26 @@ class SignupIn(BaseModel):
     email: EmailStr
     password: str
     vehicle_type: VehicleType
+    document_type: DocumentType
+    document: str = Field(min_length=5, max_length=32)
+    document_consent: bool
 
     @field_validator("password")
     @classmethod
     def _pw(cls, v: str) -> str:
         return _check_password(v)
+
+    @field_validator("document")
+    @classmethod
+    def _doc(cls, v: str) -> str:
+        return v.strip()
+
+    @field_validator("document_consent")
+    @classmethod
+    def _consent(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError("autorize o uso do documento para criar a conta")
+        return v
 
 
 class LoginIn(BaseModel):
@@ -121,6 +138,12 @@ class UserOut(BaseModel):
     income_sources: list[IncomeSource]
     expense_categories: list[ExpenseCategory]
     created_at: datetime
+    document_type: Optional[DocumentType] = None
+    trial_started_at: Optional[datetime] = None
+    trial_ends_at: Optional[datetime] = None
+    subscription_status: SubscriptionStatus = "trialing"
+    subscription_ends_at: Optional[datetime] = None
+    access_blocked: bool = False
 
 
 class ProfilePatch(BaseModel):

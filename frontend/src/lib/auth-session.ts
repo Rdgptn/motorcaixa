@@ -1,7 +1,7 @@
 // Session boundary: auth is an httpOnly cookie the backend owns; the frontend's one
 // duty is wiping the react-query cache so one account's data never renders for the next.
 import { queryClient } from "./queryClient";
-import { apiPost } from "./api";
+import { apiPost } from "./api-client";
 
 // Call after every successful login/signup.
 export function beginSession(): void {

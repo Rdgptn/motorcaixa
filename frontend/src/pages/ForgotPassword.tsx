@@ -6,8 +6,8 @@ import AuthLayout from "@/components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiPost } from "@/lib/api";
-import { errorMessage } from "@/lib/format";
+import { apiPost } from "@/lib/api-client";
+import { errorMessage } from "@/lib/formatters";
 import type { MessageOut } from "@/lib/types";
 
 export default function ForgotPassword() {

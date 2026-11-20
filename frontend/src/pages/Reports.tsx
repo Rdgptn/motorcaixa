@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Disclaimer, KpiCard, NativeSelect, PageHeader, Panel, SkeletonBlock } from "@/components/finance/ui";
-import { apiGet, apiPost } from "@/lib/api";
-import { brDate, dateTime, errorMessage, money, monthEnd, monthLabel, shiftMonth } from "@/lib/format";
-import { useMe } from "@/lib/hooks";
+import { apiGet, apiPost } from "@/lib/api-client";
+import { brDate, dateTime, errorMessage, money, monthEnd, monthLabel, shiftMonth } from "@/lib/formatters";
+import { useMe } from "@/lib/data-hooks";
 import type { DashboardOut, ReportRunOut, SummaryCompareOut } from "@/lib/types";
 
 type Preset = "month" | "prev" | "3m" | "custom";

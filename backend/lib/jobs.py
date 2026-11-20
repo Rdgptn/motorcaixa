@@ -14,8 +14,8 @@ from zoneinfo import ZoneInfo
 from pymongo.errors import DuplicateKeyError
 
 from lib.dates import today_iso
-from lib.db import db
-from lib.deps import is_verified
+from lib.database import db
+from lib.auth_dependencies import is_verified
 from lib.finance import month_label, prev_month
 from lib.mailer import EmailError, monthly_report_html, send_email
 from lib.security import mask_email, now_utc

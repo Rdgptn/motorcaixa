@@ -1,6 +1,7 @@
-"""Conversão de documentos do Mongo em modelos de resposta (sem campos sensíveis)."""
+"""Serializadores de respostas da API, sem campos sensíveis."""
 
-from lib.deps import is_verified
+from lib.auth_dependencies import is_verified
+from lib.identity import has_access
 from lib.security import aware
 from models.schemas import AdminUserRow, ExpenseOut, RecurringOut, ReportRunOut, UserOut
 
@@ -13,6 +14,9 @@ def user_out(u: dict) -> UserOut:
         report_opt_in=u.get("report_opt_in", True), report_attach=u.get("report_attach", True),
         is_demo=u.get("is_demo", False), income_sources=u.get("income_sources", []),
         expense_categories=u.get("expense_categories", []), created_at=aware(u["created_at"]),
+        document_type=u.get("document_type"), trial_started_at=aware(u.get("trial_started_at")),
+        trial_ends_at=aware(u.get("trial_ends_at")), subscription_status=u.get("subscription_status", "trialing"),
+        subscription_ends_at=aware(u.get("subscription_ends_at")), access_blocked=not has_access(u),
     )
 
 

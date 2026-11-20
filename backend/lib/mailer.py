@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from lib.db import db
+from lib.database import db
 from lib.security import mask_email, now_utc
 
 logger = logging.getLogger(__name__)

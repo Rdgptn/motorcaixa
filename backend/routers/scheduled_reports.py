@@ -1,8 +1,5 @@
-"""Endpoint chamado pelo agendador da plataforma (.emergent/crons.yml).
+"""Relatórios automáticos e tarefas agendadas protegidos por Bearer e idempotência."""
 
-Protegido por Bearer WEBHOOK_CRON_SECRET (comparação em tempo constante). Responde 202
-imediatamente e executa o trabalho em segundo plano. O X-Webhook-Id evita execução dupla.
-"""
 
 import hmac
 import os
@@ -10,7 +7,7 @@ import os
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pymongo.errors import DuplicateKeyError
 
-from lib.db import db
+from lib.database import db
 from lib.jobs import daily_job
 from lib.security import now_utc
 

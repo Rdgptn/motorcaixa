@@ -13,7 +13,7 @@ Fórmulas (documentadas também no README):
 import calendar
 from datetime import date, timedelta
 
-from lib.db import db
+from lib.database import db
 from models.schemas import DailyPoint, NamedTotal, PeriodSummary
 
 MONTH_NAMES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto",

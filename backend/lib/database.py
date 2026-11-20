@@ -1,4 +1,4 @@
-"""Shared Mongo handle — import `client`/`db` from here (server.py, routers, seed.py)."""
+"""Conexão compartilhada com MongoDB e índices de integridade."""
 
 import logging
 import os
@@ -22,6 +22,7 @@ INDEXES: dict[str, list[IndexModel]] = {
     "users": [
         IndexModel([("id", ASCENDING)], name="id", unique=True),
         IndexModel([("email", ASCENDING)], name="email", unique=True),
+        IndexModel([("document_fingerprint", ASCENDING)], name="document_fingerprint", unique=True, sparse=True),
         IndexModel([("created_at", DESCENDING)], name="created_desc"),
     ],
     "sessions": [
@@ -62,6 +63,8 @@ INDEXES: dict[str, list[IndexModel]] = {
     "email_logs": [IndexModel([("created_at", DESCENDING)], name="created_desc")],
     "audit_logs": [IndexModel([("created_at", DESCENDING)], name="created_desc")],
     "cron_runs": [IndexModel([("run_id", ASCENDING)], name="run_id", unique=True)],
+    "webhook_events": [IndexModel([("provider_event_id", ASCENDING)], name="provider_event_id", unique=True),
+                       IndexModel([("received_at", DESCENDING)], name="received_desc")],
 }
 
 

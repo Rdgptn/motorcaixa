@@ -2,6 +2,8 @@
 // Ao alterar um modelo Pydantic, altere a interface correspondente aqui na mesma edição.
 
 export type VehicleType = "carro" | "moto";
+export type DocumentType = "cpf" | "rg";
+export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled" | "expired";
 export type ExpenseKind = "diaria" | "mensal" | "eventual";
 
 export interface MessageOut { message: string }
@@ -25,6 +27,12 @@ export interface UserOut {
   income_sources: IncomeSource[];
   expense_categories: ExpenseCategory[];
   created_at: string;
+  document_type?: DocumentType;
+  trial_started_at?: string | null;
+  trial_ends_at?: string | null;
+  subscription_status?: SubscriptionStatus;
+  subscription_ends_at?: string | null;
+  access_blocked?: boolean;
 }
 
 export interface DayEntry { source_id: string; source_name: string; amount_cents: number }
