@@ -21,6 +21,7 @@ export default function Signup() {
   const [vehicle, setVehicle] = useState<VehicleType>("carro");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [documentType, setDocumentType] = useState<DocumentType>("cpf");
   const [document, setDocument] = useState("");
   const [documentConsent, setDocumentConsent] = useState(false);
@@ -29,7 +30,7 @@ export default function Signup() {
   const [error, setError] = useState("");
 
   const signup = useMutation({
-    mutationFn: () => apiPost<MessageOut>("/auth/signup", { name, email, password, vehicle_type: vehicle, document_type: documentType, document, document_consent: documentConsent }),
+    mutationFn: () => apiPost<MessageOut>("/auth/signup", { name, email, whatsapp: whatsapp.replace(/\D/g, ""), password, vehicle_type: vehicle, document_type: documentType, document, document_consent: documentConsent }),
     onError: (e) => setError(errorMessage(e)),
   });
 
@@ -37,6 +38,8 @@ export default function Signup() {
     e.preventDefault();
     const pw = passwordProblem(password);
     if (name.trim().length < 2) return setError("Informe seu nome.");
+    const phoneDigits = whatsapp.replace(/\D/g, "");
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) return setError("Informe um WhatsApp válido com DDD.");
     const digits = document.replace(/\D/g, "");
     if (documentType === "cpf" && digits.length !== 11) return setError("Informe um CPF válido com 11 dígitos.");
     if (documentType === "rg" && (digits.length < 5 || digits.length > 14)) return setError("Informe um RG válido.");
@@ -89,6 +92,10 @@ export default function Signup() {
         <div className="space-y-2">
           <Label htmlFor="email">E-mail</Label>
           <Input id="email" type="email" required autoComplete="email" className="h-12" value={email} onChange={(e) => setEmail(e.target.value)} data-testid="signup-email-input" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="whatsapp">WhatsApp com DDD</Label>
+          <Input id="whatsapp" name="whatsapp" type="tel" inputMode="tel" required autoComplete="tel-national" placeholder="(11) 99999-9999" className="h-12" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} data-testid="signup-whatsapp-input" />
         </div>
         <div className="space-y-2">
           <Label>Documento de identificação</Label>
