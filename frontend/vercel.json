@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/",
+      "destination": "https://motorcaixa.fastapicloud.dev/api/"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://motorcaixa.fastapicloud.dev/api/:path*"
     },
