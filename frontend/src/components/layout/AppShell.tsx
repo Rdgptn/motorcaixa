@@ -1,15 +1,12 @@
 import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { BarChart3, CalendarDays, Home, LogOut, MailWarning, Receipt, Settings2, Shield, Bike, Car, Loader2, LockKeyhole } from "lucide-react";
+import { BarChart3, CalendarDays, Home, LogOut, Receipt, Settings2, Shield, Bike, Car, LockKeyhole } from "lucide-react";
 import { Logo } from "@/components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ApiError, apiPost } from "@/lib/api-client";
+import { ApiError } from "@/lib/api-client";
 import { endSession } from "@/lib/auth-session";
-import { errorMessage } from "@/lib/formatters";
 import { useMe } from "@/lib/data-hooks";
-import type { MessageOut, UserOut } from "@/lib/types";
+import type { UserOut } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -19,30 +16,6 @@ const NAV = [
   { to: "/app/relatorios", label: "Relatórios", icon: BarChart3, id: "reports" },
   { to: "/app/ajustes", label: "Ajustes", icon: Settings2, id: "settings" },
 ];
-
-function VerifyGate({ user }: { user: UserOut }) {
-  const resend = useMutation({
-    mutationFn: () => apiPost<MessageOut>("/auth/resend-verification"),
-    onSuccess: (r) => toast.success(r.message),
-    onError: (e) => toast.error(errorMessage(e)),
-  });
-  return (
-    <div className="mx-auto max-w-lg rounded-2xl border border-warning/40 bg-card p-6 animate-rise" data-testid="verify-gate">
-      <MailWarning className="size-10 text-warning" aria-hidden />
-      <h2 className="mt-3 text-2xl font-bold">Confirme seu e-mail</h2>
-      <p className="mt-2 text-muted-foreground">
-        Enviamos um link para <strong className="text-foreground" data-testid="verify-gate-email">{user.email}</strong>.
-        Por segurança, os lançamentos e relatórios ficam liberados só depois da confirmação. Assim, sua planilha mensal nunca vai para um endereço errado.
-      </p>
-      <div className="mt-5 flex flex-wrap gap-3">
-        <Button onClick={() => resend.mutate()} disabled={resend.isPending} data-testid="verify-gate-resend-button">
-          {resend.isPending && <Loader2 className="size-4 animate-spin" />} Reenviar link
-        </Button>
-        <NavLink to="/app/ajustes" className="inline-flex h-9 items-center rounded-lg border px-4 text-sm" data-testid="verify-gate-change-email">Corrigir e-mail</NavLink>
-      </div>
-    </div>
-  );
-}
 
 function SubscriptionGate({ user }: { user: UserOut }) {
   const end = user.trial_ends_at ? new Date(user.trial_ends_at).toLocaleDateString("pt-BR") : "o fim do período gratuito";
@@ -63,13 +36,21 @@ export default function AppShell() {
   if (me.error instanceof ApiError && me.error.status === 401) return <Navigate to="/entrar" replace />;
   const user = me.data;
   const isSettings = loc.pathname.startsWith("/app/ajustes");
-  const isAdminPage = loc.pathname.startsWith("/app/admin");
   const nav = user?.role === "admin" ? [...NAV, { to: "/app/admin", label: "Admin", icon: Shield, id: "admin", end: false }] : NAV;
 
   let content;
   if (me.isLoading) content = <div className="h-40 animate-pulse rounded-xl bg-card" data-testid="app-loading" />;
-  else if (!user) content = <p className="rounded-xl border bg-card p-6 text-muted-foreground" data-testid="app-offline">Não foi possível conectar ao servidor. Tente novamente em instantes.</p>;
-  else if (!user.email_verified && !isSettings && !(isAdminPage && user.role === "admin")) content = <VerifyGate user={user} />;
+  else if (!user) {
+    const message = me.error instanceof ApiError && me.error.status >= 500
+      ? "O servidor está temporariamente indisponível. Tente novamente em instantes."
+      : me.error instanceof ApiError
+        ? "Não foi possível validar sua sessão. Entre novamente."
+        : "Sem conexão com o MotorCaixa. Confira sua internet e tente novamente.";
+    content = <div className="rounded-xl border bg-card p-6 text-muted-foreground" data-testid="app-offline">
+      <p>{message}</p>
+      <Button variant="outline" className="mt-3" onClick={() => me.refetch()}>Tentar novamente</Button>
+    </div>;
+  }
   else if (user.access_blocked && !isSettings) content = <SubscriptionGate user={user} />;
   else content = <Outlet />;
 

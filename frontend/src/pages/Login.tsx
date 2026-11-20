@@ -22,15 +22,17 @@ export default function Login() {
 
   const login = useMutation({
     mutationFn: () => apiPost<UserOut>("/auth/login", { email, password }),
-    onSuccess: (u) => {
-      beginSession();
+    onSuccess: async (u) => {
+      await beginSession(u);
       toast.success(`Bem-vindo, ${u.name.split(" ")[0]}!`);
       nav(u.role === "admin" ? "/app/admin" : "/app", { replace: true });
     },
     onError: (e) => setError(errorMessage(e)),
   });
 
-  if (me.data && !login.isPending && !login.isSuccess) return <Navigate to="/app" replace />;
+  if (me.data && !login.isPending && !login.isSuccess) {
+    return <Navigate to={me.data.role === "admin" ? "/app/admin" : "/app"} replace />;
+  }
 
   const submit = (e: FormEvent) => {
     e.preventDefault();

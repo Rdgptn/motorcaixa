@@ -1,6 +1,6 @@
-// Typed fetch layer over the FastAPI backend. Base is the relative "/api" prefix so the
-// same code works in dev (Vite proxies /api → :8001) and behind a single origin in prod.
-const BASE = (import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "");
+// Production always uses Vercel's same-origin proxy so the httpOnly session
+// cookie is first-party. Local development may override the Vite /api proxy.
+const BASE = (import.meta.env.PROD ? "/api" : (import.meta.env.VITE_API_URL || "/api")).replace(/\/$/, "");
 
 // Fields are declared, not constructor parameter properties: tsconfig sets
 // erasableSyntaxOnly, which rejects `constructor(readonly status: number)`.
@@ -24,6 +24,7 @@ async function request<T>(method: string, path: string, body?: JsonBody): Promis
     method,
     headers: body === undefined ? undefined : { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
+    credentials: "include",
   });
 
   // FastAPI reports request-validation failures as 422 with a {detail: [...]} body.

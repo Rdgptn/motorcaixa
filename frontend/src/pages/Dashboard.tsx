@@ -4,7 +4,7 @@ import { AlertTriangle, CalendarPlus, CheckCircle2, Info, ReceiptText } from "lu
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { buttonVariants } from "@/components/ui/button";
 import { CHART_COLORS, Disclaimer, EmptyState, KpiCard, PageHeader, Panel, SkeletonBlock } from "@/components/finance/ui";
-import { apiGet } from "@/lib/api-client";
+import { ApiError, apiGet } from "@/lib/api-client";
 import { money, monthLabel } from "@/lib/formatters";
 import { useMe } from "@/lib/data-hooks";
 import type { DashboardOut } from "@/lib/types";
@@ -15,6 +15,15 @@ export default function Dashboard() {
   const me = useMe();
   const q = useQuery({ queryKey: ["dashboard"], queryFn: () => apiGet<DashboardOut>("/dashboard") });
   const d = q.isError ? undefined : q.data;
+  const dashboardError = q.error instanceof ApiError
+    ? q.error.status === 401
+      ? "Sua sessão expirou. Entre novamente para continuar."
+      : q.error.status === 402
+        ? "Seu período de acesso terminou. Confira as opções de assinatura."
+        : q.error.status >= 500
+          ? "O servidor está temporariamente indisponível. Tente novamente em instantes."
+          : "Não foi possível carregar seu resumo. Tente novamente."
+    : "Sem conexão com o MotorCaixa. Confira sua internet e tente novamente.";
   const first = me.data?.name.split(" ")[0] ?? "";
 
   const chart = (d?.current.daily ?? []).filter((p) => p.status !== "futuro").map((p) => ({
@@ -30,7 +39,10 @@ export default function Dashboard() {
           <Link to="/app/despesas?nova=1" className={buttonVariants({ variant: "outline", className: "h-11" })} data-testid="dashboard-add-expense-button"><ReceiptText className="size-4" /> Lançar despesa</Link>
         </>} />
 
-      {q.isError && <p className="rounded-xl border bg-card p-4 text-sm text-muted-foreground" data-testid="dashboard-error">Não foi possível carregar o resumo agora.</p>}
+      {q.isError && <div className="rounded-xl border bg-card p-4 text-sm text-muted-foreground" data-testid="dashboard-error">
+        <p>{dashboardError}</p>
+        <button type="button" className="mt-2 font-semibold text-primary hover:underline" onClick={() => q.refetch()}>Tentar novamente</button>
+      </div>}
       {!d && !q.isError && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <SkeletonBlock key={i} className="h-28" />)}</div>}
 
       {d && (
